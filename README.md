@@ -1,4 +1,4 @@
-# Snake Game with Linked List
+# Snake Game with Linked Lists
 
 ## Description
 

@@ -47,7 +47,7 @@ public class Panel extends JPanel implements KeyListener {
         this.setFocusable(true);
 
         // Display game instructions
-        String instructions = "Welcome to the game!\n\nInstructions:\n1. Use the WASD keys to move the snake.\n2. You die when you hit the borders, snake head touches the body, or when your snake loses its head!\n3. Have fun!";
+        String instructions = "Welcome to the game!\n\nInstructions:\n1. Use the WASD keys to move the snake.\n2. You die when you hit the borders or when your snake loses its head!\n3. Have fun!";
         JOptionPane.showMessageDialog(null, instructions, "Game Instructions", JOptionPane.INFORMATION_MESSAGE);
 
         // Create snake
@@ -142,17 +142,16 @@ public class Panel extends JPanel implements KeyListener {
                 break;
         }
 
-        // Check if snake collides with anything
-        checkBorderCollisions();
-        checkFoodCollisions();
-
         // Check if snake is still able to play
         if (!snakeAlive || snakeLength <= 0) {
             gameOver();
         }
 
-        repaint();
+        // Check if snake collides with anything
+        checkBorderCollisions();
+        checkFoodCollisions();
 
+        repaint();
     }
 
     @Override
@@ -219,7 +218,7 @@ public class Panel extends JPanel implements KeyListener {
 
     public void drawLetter(Graphics g, int x, int y) {
         /* Draws the 1 letter at a given location in the playing field */
-        
+
         g.setColor(Color.ORANGE);
         g.setFont(new Font("Arial", Font.BOLD, 24));
         g.drawString(String.valueOf(randomLetter), x, y);
@@ -227,7 +226,7 @@ public class Panel extends JPanel implements KeyListener {
 
     private void createNumbers() {
         /* Creates numbers 0-9 and sets locations for them to spawn  */
-        
+
         for (int i = 0; i < 10; i++) {
             numbersX[i] = setLocationX();
             numbersY[i] = setLocationY();
@@ -237,7 +236,7 @@ public class Panel extends JPanel implements KeyListener {
 
     private void createLetter() {
         /* Randomly generates a letter and gives it a location for it to spawn */
-        
+
         randomLetter = (char) ('A' + (int) (Math.random() * 26));
         letterX = setLocationX();
         letterY = setLocationY();
@@ -245,7 +244,7 @@ public class Panel extends JPanel implements KeyListener {
 
     public void respawnNumber(int num) {
         /* Respawns a number after being eaten */
-        
+
         int respawnX = setLocationX();
         int respawnY = setLocationY();
         numbersX[num] = respawnX;
@@ -255,7 +254,7 @@ public class Panel extends JPanel implements KeyListener {
 
     public int setLocationX() {
         /* Set the X location for numbers and letters */
-        
+
         int min = cellSize * 2;
         int max = rows * cellSize - cellSize;
         int increment = cellSize;
@@ -268,7 +267,7 @@ public class Panel extends JPanel implements KeyListener {
 
     public int setLocationY() {
         /* Set the Y location for numbers and letters */
-        
+
         int min = cellSize * 2;
         int max = rows * cellSize - cellSize;
         int increment = cellSize;
@@ -281,7 +280,7 @@ public class Panel extends JPanel implements KeyListener {
 
     public void checkBorderCollisions() {
         /* Check for snake and border collisions */
-        
+
         if (snakeX[0] <= 1 || snakeX[0] >= (gridWidth / cellSize)
                 || snakeY[0] < 1 || snakeY[0] >= (gridHeight / cellSize) - 2) {
             timer.stop(); // Snake hit the border, stop moving
@@ -312,7 +311,13 @@ public class Panel extends JPanel implements KeyListener {
                         && snakeY[0] >= (numbersY[i] / cellSize) && snakeY[0] <= (numbersY[i] / cellSize)) {
                     snakeLength--;
                     numberDisplayed[i] = false; // Hide the number
-                    snakeString.remove(i);
+                    
+                    if(i == 0) { // Prevents from removing head if length is greater than 1
+                      snakeString.remove(i+1);  
+                    } else {
+                       snakeString.remove(i);   
+                    }
+                   
                     respawnNumber(i); // Respawn a new number with int i
                     System.out.println("Number hit!");
                 }
@@ -322,7 +327,7 @@ public class Panel extends JPanel implements KeyListener {
 
     public void gameOver() {
         /* Ends the game */
-        
+
         JOptionPane.showMessageDialog(null, "Game Over! Your snake has died :(");
         System.exit(0);
     }

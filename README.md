@@ -8,7 +8,7 @@ This is a simple Snake game implementation in Java that incorporates a linked li
 
 - Snake movement using WASD keys.
 - Collect letters and numbers to grow the snake.
-- Game over when the snake hits the borders or collides with its own body.
+- Game over when the snake hits the borders or loses its head _(hitting a number with no letters left)_.
 
 ## Linked List Integration
 
